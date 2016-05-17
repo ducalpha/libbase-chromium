@@ -1,6 +1,8 @@
+project (BASE_CHROMIUM CXX)
+
 add_definitions (-DNDEBUG)
 
-file (GLOB BASE_SRC 
+file (GLOB BASE_CHROMIUM_SRC 
   "${CMAKE_CURRENT_SOURCE_DIR}/*.cc" 
   "${CMAKE_CURRENT_SOURCE_DIR}/debug/*.cc" 
   "${CMAKE_CURRENT_SOURCE_DIR}/files/*.cc" 
@@ -14,5 +16,5 @@ file (GLOB BASE_SRC
   "${CMAKE_CURRENT_SOURCE_DIR}/time/*.cc"
   "${CMAKE_CURRENT_SOURCE_DIR}/threading/*.cc")
 
-add_library (base ${BASE_SRC})
-target_link_libraries (base log)
+add_library (base_chromium STATIC ${BASE_CHROMIUM_SRC})
+target_link_libraries (base_chromium log)
