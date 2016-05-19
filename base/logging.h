@@ -375,6 +375,14 @@ const LogSeverity LOG_0 = LOG_ERROR;
 #ifdef LOG
 #undef LOG
 #endif
+
+// Copied from WTF/wtf/Assertions.h
+#if COMPILER(GCC_OR_CLANG)
+#define WTF_PRETTY_FUNCTION __PRETTY_FUNCTION__
+#else
+#define WTF_PRETTY_FUNCTION __FUNCTION__
+#endif
+
 #endif
 
 #define LOG(severity) LAZY_STREAM(LOG_STREAM(severity), LOG_IS_ON(severity))
