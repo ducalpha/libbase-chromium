@@ -376,8 +376,8 @@ const LogSeverity LOG_0 = LOG_ERROR;
 #undef LOG
 #endif
 
-// Copied from WTF/wtf/Assertions.h
-#if COMPILER(GCC_OR_CLANG)
+// Ported from WTF/wtf/Assertions.h
+#if defined(COMPILER_GCC) || defined(__clang__)
 #define WTF_PRETTY_FUNCTION __PRETTY_FUNCTION__
 #else
 #define WTF_PRETTY_FUNCTION __FUNCTION__
