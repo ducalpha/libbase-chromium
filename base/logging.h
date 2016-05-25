@@ -374,6 +374,10 @@ const LogSeverity LOG_0 = LOG_ERROR;
 #if !defined(BUILD_CHROMIUM)
 #ifdef LOG
 #undef LOG
+
+// A dummy function for logging
+#define WTF_LOG(channel, ...) (void) 0
+
 #endif
 
 // Ported from WTF/wtf/Assertions.h
