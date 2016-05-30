@@ -61,7 +61,7 @@ namespace base {
 
 void PlatformThread::SetCurrentThreadAffinity(const std::vector<size_t>& eligible_core_ids) {
   if (!SetThreadAffinity(0, eligible_core_ids)) {
-    LOG(ERROR) << "Set current thread affinity failed";
+    CHROMIUM_LOG(ERROR) << "Set current thread affinity failed";
   }
 }
 

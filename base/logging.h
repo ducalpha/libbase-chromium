@@ -47,16 +47,16 @@
 // ------------
 //
 // Make a bunch of macros for logging.  The way to log things is to stream
-// things to LOG(<a particular severity level>).  E.g.,
+// things to CHROMIUM_LOG(<a particular severity level>).  E.g.,
 //
-//   LOG(INFO) << "Found " << num_cookies << " cookies";
+//   CHROMIUM_LOG(INFO) << "Found " << num_cookies << " cookies";
 //
 // You can also do conditional logging:
 //
 //   LOG_IF(INFO, num_cookies > 10) << "Got lots of cookies";
 //
 // The CHECK(condition) macro is active in both debug and release builds and
-// effectively performs a LOG(FATAL) which terminates the process and
+// effectively performs a CHROMIUM_LOG(FATAL) which terminates the process and
 // generates a crashdump unless a debugger is attached.
 //
 // There are also "debug mode" logging macros like the ones above:
@@ -304,7 +304,7 @@ const LogSeverity LOG_DFATAL = LOG_FATAL;
 #endif
 
 // A few definitions of macros that don't generate much code. These are used
-// by LOG() and LOG_IF, etc. Since these are used all over our code, it's
+// by CHROMIUM_LOG() and LOG_IF, etc. Since these are used all over our code, it's
 // better to have compact code for these operations.
 #define COMPACT_GOOGLE_LOG_EX_INFO(ClassName, ...) \
   logging::ClassName(__FILE__, __LINE__, logging::LOG_INFO , ##__VA_ARGS__)
@@ -329,7 +329,7 @@ const LogSeverity LOG_DFATAL = LOG_FATAL;
   COMPACT_GOOGLE_LOG_EX_DFATAL(LogMessage)
 
 #if defined(OS_WIN)
-// wingdi.h defines ERROR to be 0. When we call LOG(ERROR), it gets
+// wingdi.h defines ERROR to be 0. When we call CHROMIUM_LOG(ERROR), it gets
 // substituted with 0, and it expands to COMPACT_GOOGLE_LOG_0. To allow us
 // to keep using this syntax, we define this macro to do the same thing
 // as COMPACT_GOOGLE_LOG_ERROR, and also define ERROR the same way that
@@ -361,7 +361,7 @@ const LogSeverity LOG_0 = LOG_ERROR;
   !(condition) ? (void) 0 : ::logging::LogMessageVoidify() & (stream)
 
 // We use the preprocessor's merging operator, "##", so that, e.g.,
-// LOG(INFO) becomes the token COMPACT_GOOGLE_LOG_INFO.  There's some funny
+// CHROMIUM_LOG(INFO) becomes the token COMPACT_GOOGLE_LOG_INFO.  There's some funny
 // subtle difference between ostream member streaming functions (e.g.,
 // ostream::operator<<(int) and ostream non-member streaming functions
 // (e.g., ::operator<<(ostream&, string&): it turns out that it's
@@ -377,7 +377,7 @@ const LogSeverity LOG_0 = LOG_ERROR;
 # endif
 #endif
 
-#define LOG(severity) LAZY_STREAM(LOG_STREAM(severity), LOG_IS_ON(severity))
+#define CHROMIUM_LOG(severity) LAZY_STREAM(LOG_STREAM(severity), LOG_IS_ON(severity))
 #define LOG_IF(severity, condition) \
   LAZY_STREAM(LOG_STREAM(severity), LOG_IS_ON(severity) && (condition))
 
@@ -776,11 +776,11 @@ void LogErrorNotReached(const char* file, int line);
 // full message gets streamed to the appropriate destination.
 //
 // You shouldn't actually use LogMessage's constructor to log things,
-// though.  You should use the LOG() macro (and variants thereof)
+// though.  You should use the CHROMIUM_LOG() macro (and variants thereof)
 // above.
 class BASE_EXPORT LogMessage {
  public:
-  // Used for LOG(severity).
+  // Used for CHROMIUM_LOG(severity).
   LogMessage(const char* file, int line, LogSeverity severity);
 
   // Used for CHECK().  Implied severity = LOG_FATAL.
@@ -952,14 +952,14 @@ inline std::ostream& operator<<(std::ostream& out, const std::wstring& wstr) {
 //   1 -- Warn at compile time
 //   2 -- Fail at compile time
 //   3 -- Fail at runtime (DCHECK)
-//   4 -- [default] LOG(ERROR) at runtime
-//   5 -- LOG(ERROR) at runtime, only once per call-site
+//   4 -- [default] CHROMIUM_LOG(ERROR) at runtime
+//   5 -- CHROMIUM_LOG(ERROR) at runtime, only once per call-site
 
 #ifndef NOTIMPLEMENTED_POLICY
 #if defined(OS_ANDROID) && defined(OFFICIAL_BUILD)
 #define NOTIMPLEMENTED_POLICY 0
 #else
-// Select default policy: LOG(ERROR)
+// Select default policy: CHROMIUM_LOG(ERROR)
 #define NOTIMPLEMENTED_POLICY 4
 #endif
 #endif
@@ -982,7 +982,7 @@ inline std::ostream& operator<<(std::ostream& out, const std::wstring& wstr) {
 #elif NOTIMPLEMENTED_POLICY == 3
 #define NOTIMPLEMENTED() NOTREACHED()
 #elif NOTIMPLEMENTED_POLICY == 4
-#define NOTIMPLEMENTED() LOG(ERROR) << NOTIMPLEMENTED_MSG
+#define NOTIMPLEMENTED() CHROMIUM_LOG(ERROR) << NOTIMPLEMENTED_MSG
 #elif NOTIMPLEMENTED_POLICY == 5
 #define NOTIMPLEMENTED() do {\
   static bool logged_once = false;\
