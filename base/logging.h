@@ -370,38 +370,9 @@ const LogSeverity LOG_0 = LOG_ERROR;
 // function of LogMessage which seems to avoid the problem.
 #define LOG_STREAM(severity) COMPACT_GOOGLE_LOG_ ## severity.stream()
 
-// ducalpha: platforms other than Chromium may define LOG already
-#if !defined(CHROMIUM_BUILD)
-# ifdef LOG
-# undef LOG
-# endif
-#endif
-
 #define LOG(severity) LAZY_STREAM(LOG_STREAM(severity), LOG_IS_ON(severity))
 #define LOG_IF(severity, condition) \
   LAZY_STREAM(LOG_STREAM(severity), LOG_IS_ON(severity) && (condition))
-
-// ducalpha: add utility functions for using with WebKit
-#if defined(WEBKIT_PACKAGE)
-// A dummy function for logging
-# define _LOG(channel, ...) (void) 0
-
-// Ported from WTF/wtf/Assertions.h
-# if defined(COMPILER_GCC) || defined(__clang__)
-#   define WTF_PRETTY_FUNCTION __PRETTY_FUNCTION__
-# else
-#   define WTF_PRETTY_FUNCTION __FUNCTION__
-#endif
-
-// Use the following in place of WebKit's LOG macro
-#define WTF_LOG(channel, ...) \
-    do { \
-        char buffer[128]; \
-        snprintf(buffer, 128, __VA_ARGS__); \
-        cout << #channel << buffer; \
-    } while (0)
-
-#endif
 
 // The VLOG macros log with negative verbosities.
 #define VLOG_STREAM(verbose_level) \
